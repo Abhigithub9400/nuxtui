@@ -1,1 +1,31 @@
+name: Build and Deploy to Minikube
 
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nuxt-app:latest .
+    
+    - name: Login to Docker Hub
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+    
+    - name: Push to Docker Hub
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/nuxt-app:latest
+    
+    - name: Deploy to Minikube
+      run: |
+        kubectl apply -f k8s/
+        kubectl rollout restart deployment/nuxt-app-deployment -n nuxt-app
+        kubectl rollout status deployment/nuxt-app-deployment -n nuxt-app
+    
+    - name: Get URL
+      run: minikube service nuxt-app-service -n nuxt-app --url
