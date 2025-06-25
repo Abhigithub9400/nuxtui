@@ -112,4 +112,4 @@ spec:
     name: nuxt
     nodePort: 30300  # Direct Nuxt access (optional)
   selector:
-    app: nuxt-app
+    app: nuxt-app 
