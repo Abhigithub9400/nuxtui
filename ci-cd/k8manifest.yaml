@@ -1,1 +1,115 @@
-
+# Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nuxt-app
+---
+# ConfigMap for environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nuxt-config
+  namespace: nuxt-app
+data:
+  NUXT_HOST: "0.0.0.0"
+  NUXT_PORT: "3000"
+  TZ: "UTC"
+---
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nuxt-app-deployment
+  namespace: nuxt-app
+  labels:
+    app: nuxt-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nuxt-app
+  template:
+    metadata:
+      labels:
+        app: nuxt-app
+    spec:
+      containers:
+      - name: nuxt-app
+        image: your-dockerhub-username/nuxt-app:latest
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 3000
+          name: nuxt
+        env:
+        - name: NUXT_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: nuxt-config
+              key: NUXT_HOST
+        - name: NUXT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: nuxt-config
+              key: NUXT_PORT
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              name: nuxt-config
+              key: TZ
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+      restartPolicy: Always
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: nuxt-app-service
+  namespace: nuxt-app
+  labels:
+    app: nuxt-app
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+    nodePort: 30080  # External access port
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: nuxt
+    nodePort: 30300  # Direct Nuxt access (optional)
+  selector:
+    app: nuxt-app
