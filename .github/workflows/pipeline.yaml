@@ -23,7 +23,7 @@ jobs:
     
     - name: Deploy to Minikube
       run: |
-        kubectl apply -f k8s/
+        kubectl apply -f ci-cd/k8manifest.yaml
         kubectl rollout restart deployment/nuxt-app-deployment -n nuxt-app
         kubectl rollout status deployment/nuxt-app-deployment -n nuxt-app
     
