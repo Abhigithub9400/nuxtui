@@ -105,7 +105,7 @@ EXPOSE 80
 
 # Set environment variables
 ENV NUXT_HOST=0.0.0.0
-ENV NUXT_PORT=3000
+ENV NUXT_PORT=3001
 
 # Health check for Kubernetes
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
