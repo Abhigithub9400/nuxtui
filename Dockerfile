@@ -101,7 +101,7 @@ environment=NUXT_HOST="0.0.0.0",NUXT_PORT="3000"' > /etc/supervisor/conf.d/super
 RUN mkdir -p /var/log/supervisor
 
 # Expose port 80
-EXPOSE 80
+EXPOSE 81
 
 # Set environment variables
 ENV NUXT_HOST=0.0.0.0
