@@ -28,4 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Gitleaks for secrets scanning
-        uses: gitleaks/gitleaks-action@v2.3.2
+        run: gitleaks detect --source . --report-path=gitleaks-results.sarif --report-format=sarif
+      - name: Upload Gitleaks SARIF results
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-results-sarif   # <-- VALID artifact name, no dot
+          path: gitleaks-results.sarif   # <-- valid file name
