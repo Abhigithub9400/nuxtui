@@ -7,23 +7,13 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
-
     steps:
-     step: build 
       - uses: actions/checkout@v4
       - name: Build the Docker image
-      - run: docker build -t ui .
-     step: Trivy scan
+        run: docker build -t ui .
       - name: Aqua Security Trivy
-      - uses: aquasecurity/trivy-action@0.32.0
-      - image-ref:  ui 
-       
-   
-      
-    
-      
-    
-  
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: ui
