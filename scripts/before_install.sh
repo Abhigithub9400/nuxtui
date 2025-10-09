@@ -5,12 +5,12 @@ echo "Starting Before Install phase..."
 
 # Update system packages
 echo "Updating system packages..."
-yum update -y
+apt update -y
 
 # Install Docker if not already installed
 if ! command -v docker &> /dev/null; then
     echo "Installing Docker..."
-    yum install docker -y
+    apt install docker -y
     systemctl start docker
     systemctl enable docker
     usermod -aG docker ec2-user
