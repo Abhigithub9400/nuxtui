@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    DOCKERHUB_USERNAME: abhijithdockerhub
+    IMAGE_NAME: abhijithdockerhub/codebuild
+  parameter-store:
+    DOCKERHUB_TOKEN: /codebuild/dockerhub/token
+
+phases:
+  pre_build:
+    commands:
+      # Login to Docker Hub using the token from Parameter Store
+      - echo "Logging in to Docker Hub..."
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
+      - echo "Logged in to Docker Hub successfully"
+      
+  build:
+    commands:
+      # Build the Docker image
+      - echo "Building Docker image..."
+      - docker build -t $IMAGE_NAME:latest .
+      - docker tag $IMAGE_NAME:latest $IMAGE_NAME:$CODEBUILD_BUILD_NUMBER
+      - echo "Docker image built successfully"
+      
+  post_build:
+    commands:
+      # Push the Docker image to Docker Hub
+      - echo "Pushing Docker image to Docker Hub..."
+      - docker push $IMAGE_NAME:latest
+      - docker push $IMAGE_NAME:$CODEBUILD_BUILD_NUMBER
+      - echo "Docker image pushed successfully"
+      # Create deployment artifacts
+      - echo "Preparing deployment artifacts..."
+
+artifacts:
+  files:
+    - appspec.yml
+    - scripts/**/*
+  name: BuildArtifact
