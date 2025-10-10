@@ -26,3 +26,4 @@ if [ -d "/home/ec2-user/app" ]; then
 fi
 
 echo "Before Install phase completed successfully"
+# test
