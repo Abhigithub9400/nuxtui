@@ -12,3 +12,4 @@ docker pull abhijithdockerhub/codebuild:latest
 
 echo "Docker image pulled successfully"
 echo "After Install phase completed successfully"
+# testing
