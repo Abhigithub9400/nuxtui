@@ -24,4 +24,4 @@ hooks:
     - location: scripts/stop_application.sh
       timeout: 300
       runas: root
-# test
+
