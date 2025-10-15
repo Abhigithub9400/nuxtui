@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: nuxt-app
-        image: your-dockerhub-username/nuxt-app:latest
+        image: abhijithdockerhub/codebuild
         ports:
         - containerPort: 80
           name: http
