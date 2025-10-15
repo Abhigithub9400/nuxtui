@@ -31,7 +31,7 @@ spec:
       port: 80
       targetPort: 80
       protocol: TCP
-      nodePort: 30080
+      nodePort: 31080
   selector:
     app: nuxt-app
 ---
@@ -40,7 +40,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: nuxt-app
-  name: nuxt-app
+  name: nuxt-app-deployment
   labels:
     app: nuxt-app
 spec:
