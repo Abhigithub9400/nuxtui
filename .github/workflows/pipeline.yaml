@@ -1,11 +1,10 @@
 name: UI
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+  workflow_dispatch:  # Enables manual trigger from GitHub Actions UI
 jobs:
   build-and-scan:
     runs-on: ubuntu-latest
@@ -23,32 +22,25 @@ jobs:
           
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
       - name: Build Docker image
         run: docker build -t abhijithdockerhub/ui:latest .
-
       - name: Push Docker image to Docker Hub
         run: docker push abhijithdockerhub/ui:latest
-
       - name: Scan image with Trivy
         uses: aquasecurity/trivy-action@0.32.0
         with:
           image-ref: abhijithdockerhub/ui:latest
-          args: --skip-version-check # Optional: suppress version check notices
-
+          args: --skip-version-check
   secrets-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Run Gitleaks for secrets scanning
         uses: gitleaks/gitleaks-action@v2
         with:
           args: --source . --report-path=gitleaks-results.sarif --report-format=sarif
-
       - name: Upload Gitleaks SARIF results
         uses: actions/upload-artifact@v4
         with:
           name: gitleaks-results-sarif
           path: gitleaks-results.sarif
-
